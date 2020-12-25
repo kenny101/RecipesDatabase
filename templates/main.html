@@ -1,0 +1,1217 @@
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% load static %}
+{% load endless %}
+
+<style>
+    /*!
+   * Start Bootstrap - Simple Sidebar (https://startbootstrap.com/templates/simple-sidebar)
+   * Copyright 2013-2020 Start Bootstrap
+   * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-simple-sidebar/blob/master/LICENSE)
+   */
+    #wrapper {
+        overflow-x: hidden;
+    }
+
+    #sidebar-wrapper {
+        min-height: 100vh;
+        margin-left: -15rem;
+        -webkit-transition: margin .25s ease-out;
+        -moz-transition: margin .25s ease-out;
+        -o-transition: margin .25s ease-out;
+        transition: margin .25s ease-out;
+    }
+
+    #sidebar-wrapper .sidebar-heading {
+        padding: 0.875rem 1.25rem;
+        font-size: 1.2rem;
+    }
+
+    #sidebar-wrapper .list-group {
+        width: 20rem;
+
+    }
+
+    #page-content-wrapper {
+        min-width: 100vw;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+
+    }
+
+    @media (min-width: 768px) {
+        #sidebar-wrapper {
+            margin-left: 0;
+        }
+
+        #page-content-wrapper {
+            min-width: 0;
+            width: 100%;
+        }
+
+        #wrapper.toggled #sidebar-wrapper {
+            margin-left: -20rem;
+
+        }
+    }
+
+
+    ul.ui-autocomplete {
+        list-style: none;
+        padding: 10px;
+        margin: 0px;
+        text-transform: capitalize;
+
+        max-height: 400px;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+    }
+</style>
+
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--Infinite Scrolling-->
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/infinite.min.js' %}"></script>
+
+    <!-- Convert csv to table -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.js"></script>
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha256-aAr2Zpq8MZ+YA/D6JtRD3xtrwpEz2IqOS+pWD/7XKIw=" crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"
+            integrity="sha256-OFRAJNoaD8L3Br5lglV7VyLRf0itmoBzWUoM+Sji4/8=" crossorigin="anonymous"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <title>Find a Recipe</title>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.my_ingredients').select2();
+        });
+    </script>
+
+</head>
+
+
+<body>
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+        <div class="sidebar-heading">Find a Recipe</div>
+
+        <div class="list-group list-group-flush" id="sidebar">
+            <input type="text" class="form-control" placeholder="Add Ingredients here" id="foods"
+                   style=font-size:larger;/>
+        </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+
+    {% block body %}
+    <!-- Page Content -->
+    <div class="row">
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <button class="btn btn-primary" id="menu-toggle">Add Ingredients</button>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Dropdown
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <div class="card">
+            <form action="multiSelectPro.php" method="post">
+                <div class="form-group">
+                    <label>Add Ingredients Here :</label>
+                    <select class="my_ingredients related-post form-control" name="my_ingredients[]" multiple>
+                        <option>bread</option>
+                        <option>butter</option>
+                        <option>pepper</option>
+                        <option>methi</option>
+                        <option>gin</option>
+                        <option>sugar</option>
+                        <option>cream</option>
+                        <option>garlic</option>
+                        <option>flour</option>
+                        <option>juice</option>
+                        <option>cheese</option>
+                        <option>milk</option>
+                        <option>onions</option>
+                        <option>olive oil</option>
+                        <option>chicken</option>
+                        <option>eggs</option>
+                        <option>lemon</option>
+                        <option>corn</option>
+                        <option>rum</option>
+                        <option>chili</option>
+                        <option>rice</option>
+                        <option>chocolate</option>
+                        <option>ale</option>
+                        <option>roast</option>
+                        <option>bacon</option>
+                        <option>bacon</option>
+                        <option>coco</option>
+                        <option>meal</option>
+                        <option>toast</option>
+                        <option>fish</option>
+                        <option>vanilla</option>
+                        <option>vinegar</option>
+                        <option>boar</option>
+                        <option>potatoes</option>
+                        <option>tomatoes</option>
+                        <option>nuts</option>
+                        <option>ginger</option>
+                        <option>dough</option>
+                        <option>cinnamon</option>
+                        <option>vegetables</option>
+                        <option>rub</option>
+                        <option>wine</option>
+                        <option>ham</option>
+                        <option>fruit</option>
+                        <option>spices</option>
+                        <option>icing</option>
+                        <option>coconut</option>
+                        <option>batter</option>
+                        <option>salad</option>
+                        <option>coriander</option>
+                        <option>beef</option>
+                        <option>honey</option>
+                        <option>parsley</option>
+                        <option>berries</option>
+                        <option>crust</option>
+                        <option>uni</option>
+                        <option>beans</option>
+                        <option>cumin</option>
+                        <option>pork</option>
+                        <option>mustard</option>
+                        <option>yolk</option>
+                        <option>carrots</option>
+                        <option>soy</option>
+                        <option>paprika</option>
+                        <option>garnish</option>
+                        <option>mushrooms</option>
+                        <option>pasta</option>
+                        <option>lime</option>
+                        <option>peas</option>
+                        <option>glaze</option>
+                        <option>pastry</option>
+                        <option>mint</option>
+                        <option>curry</option>
+                        <option>thyme</option>
+                        <option>basil</option>
+                        <option>starch</option>
+                        <option>steak</option>
+                        <option>sesame</option>
+                        <option>herbs</option>
+                        <option>baking soda</option>
+                        <option>soy sauce</option>
+                        <option>ice cream</option>
+                        <option>jam</option>
+                        <option>coffee</option>
+                        <option>almonds</option>
+                        <option>boiling water</option>
+                        <option>cocoa</option>
+                        <option>wheat</option>
+                        <option>tuna</option>
+                        <option>rosemary</option>
+                        <option>yeast</option>
+                        <option>sour cream</option>
+                        <option>apples</option>
+                        <option>cookies</option>
+                        <option>noodles</option>
+                        <option>cod</option>
+                        <option>gluten</option>
+                        <option>chicken stock</option>
+                        <option>celery</option>
+                        <option>plain flour</option>
+                        <option>ketchup</option>
+                        <option>garlic powder</option>
+                        <option>cold water</option>
+                        <option>spring onions</option>
+                        <option>rye</option>
+                        <option>shallots</option>
+                        <option>cream cheese</option>
+                        <option>vegetable oil</option>
+                        <option>liver</option>
+                        <option>wine vinegar</option>
+                        <option>cocoa powder</option>
+                        <option>cabbage</option>
+                        <option>chuck</option>
+                        <option>strawberries</option>
+                        <option>nutmeg</option>
+                        <option>canola</option>
+                        <option>cayenne</option>
+                        <option>beer</option>
+                        <option>pies</option>
+                        <option>bananas</option>
+                        <option>citrus</option>
+                        <option>buttermilk</option>
+                        <option>fennel</option>
+                        <option>buns</option>
+                        <option>spaghetti</option>
+                        <option>candy</option>
+                        <option>peanuts</option>
+                        <option>smoked paprika</option>
+                        <option>sea salt</option>
+                        <option>loin</option>
+                        <option>chives</option>
+                        <option>biscuits</option>
+                        <option>jalape</option>
+                        <option>cheddar cheese</option>
+                        <option>chutney</option>
+                        <option>prawns</option>
+                        <option>cooking oil</option>
+                        <option>pig</option>
+                        <option>anise</option>
+                        <option>cauliflower</option>
+                        <option>sherry</option>
+                        <option>sesame seeds</option>
+                        <option>double cream</option>
+                        <option>tortillas</option>
+                        <option>vinaigrette</option>
+                        <option>curry leaves</option>
+                        <option>capers</option>
+                        <option>fish sauce</option>
+                        <option>virgin olive oil</option>
+                        <option>mustard seeds</option>
+                        <option>bay leaf</option>
+                        <option>chicken thighs</option>
+                        <option>pesto</option>
+                        <option>cayenne pepper</option>
+                        <option>sweet potatoes</option>
+                        <option>fresh thyme</option>
+                        <option>brandy</option>
+                        <option>shells</option>
+                        <option>garlic paste</option>
+                        <option>pectin</option>
+                        <option>tofu</option>
+                        <option>caster sugar</option>
+                        <option>roti</option>
+                        <option>fennel seeds</option>
+                        <option>rice wine</option>
+                        <option>orange zest</option>
+                        <option>black beans</option>
+                        <option>lard</option>
+                        <option>peppercorns</option>
+                        <option>onion powder</option>
+                        <option>crab</option>
+                        <option>diced tomatoes</option>
+                        <option>garlic cloves</option>
+                        <option>barbecue sauce</option>
+                        <option>ancho</option>
+                        <option>chili sauce</option>
+                        <option>tomato paste</option>
+                        <option>canola oil</option>
+                        <option>lobster</option>
+                        <option>allspice</option>
+                        <option>seafood</option>
+                        <option>grapes</option>
+                        <option>coriander seeds</option>
+                        <option>brine</option>
+                        <option>quinoa</option>
+                        <option>sake</option>
+                        <option>corn flour</option>
+                        <option>goat</option>
+                        <option>liquor</option>
+                        <option>frozen peas</option>
+                        <option>silver</option>
+                        <option>fresh lemon juice</option>
+                        <option>molasses</option>
+                        <option>fresh chili</option>
+                        <option>sourdough</option>
+                        <option>brisket</option>
+                        <option>bread dough</option>
+                        <option>bean paste</option>
+                        <option>sirloin</option>
+                        <option>ramen</option>
+                        <option>dried fruit</option>
+                        <option>crushed garlic</option>
+                        <option>asparagus</option>
+                        <option>anchovies</option>
+                        <option>fresh herbs</option>
+                        <option>guacamole</option>
+                        <option>white flour</option>
+                        <option>chorizo</option>
+                        <option>cheese sauce</option>
+                        <option>roux</option>
+                        <option>flat leaf parsley</option>
+                        <option>white bread</option>
+                        <option>milk chocolate</option>
+                        <option>mutton</option>
+                        <option>chard</option>
+                        <option>pork belly</option>
+                        <option>chicken wings</option>
+                        <option>buffalo</option>
+                        <option>basmati rice</option>
+                        <option>extra-virgin olive oil</option>
+                        <option>sherry vinegar</option>
+                        <option>miso</option>
+                        <option>roasted garlic</option>
+                        <option>squirt</option>
+                        <option>sunflower oil</option>
+                        <option>drumstick</option>
+                        <option>watercress</option>
+                        <option>ground cumin</option>
+                        <option>tartar sauce</option>
+                        <option>pretzels</option>
+                        <option>apricots</option>
+                        <option>marzipan</option>
+                        <option>croissants</option>
+                        <option>chipotle</option>
+                        <option>beef stock</option>
+                        <option>dried oregano</option>
+                        <option>chicken pieces</option>
+                        <option>palm sugar</option>
+                        <option>dark soy</option>
+                        <option>tomato ketchup</option>
+                        <option>ranch dressing</option>
+                        <option>paneer</option>
+                        <option>pastry cream</option>
+                        <option>seaweed</option>
+                        <option>gherkins</option>
+                        <option>rabbit</option>
+                        <option>squid</option>
+                        <option>bacon bits</option>
+                        <option>red bell pepper</option>
+                        <option>baked beans</option>
+                        <option>kaffir lime leaves</option>
+                        <option>lime leaves</option>
+                        <option>red chili powder</option>
+                        <option>red bell pepper</option>
+                        <option>couscous</option>
+                        <option>fresh chives</option>
+                        <option>cacao powder</option>
+                        <option>macaroni</option>
+                        <option>chiles</option>
+                        <option>grapeseed oil</option>
+                        <option>grated carrot</option>
+                        <option>clams</option>
+                        <option>cinnamon sticks</option>
+                        <option>vermicelli</option>
+                        <option>heavy whipping cream</option>
+                        <option>gremolata</option>
+                        <option>bechamel</option>
+                        <option>short rib</option>
+                        <option>rice flour</option>
+                        <option>tumeric</option>
+                        <option>raspberry jam</option>
+                        <option>wild mushrooms</option>
+                        <option>new potatoes</option>
+                        <option>vodka</option>
+                        <option>dry sherry</option>
+                        <option>hot chili</option>
+                        <option>fresh raspberries</option>
+                        <option>sweet chili sauce</option>
+                        <option>minced meat</option>
+                        <option>roast beef</option>
+                        <option>seasoning salt</option>
+                        <option>beets</option>
+                        <option>wheels</option>
+                        <option>self raising flour</option>
+                        <option>salami</option>
+                        <option>tagliatelle</option>
+                        <option>other vegetables</option>
+                        <option>stout</option>
+                        <option>mincemeat</option>
+                        <option>baby spinach</option>
+                        <option>root vegetables</option>
+                        <option>diced onions</option>
+                        <option>spring rolls</option>
+                        <option>mixed vegetables</option>
+                        <option>broccoli florets</option>
+                        <option>beaten eggs</option>
+                        <option>fillets</option>
+                        <option>phyllo</option>
+                        <option>ramen noodles</option>
+                        <option>baguette</option>
+                        <option>pork loin</option>
+                        <option>bacon fat</option>
+                        <option>meatloaf</option>
+                        <option>oyster sauce</option>
+                        <option>gnocchi</option>
+                        <option>marrow</option>
+                        <option>chimichurri</option>
+                        <option>pasta sauce</option>
+                        <option>pork tenderloin</option>
+                        <option>caramels</option>
+                        <option>shredded cheddar cheese</option>
+                        <option>king prawns</option>
+                        <option>English muffins</option>
+                        <option>fresh yeast</option>
+                        <option>fresh veget</option>
+                        <option>licorice</option>
+                        <option>catfish</option>
+                        <option>morel</option>
+                        <option>edamame</option>
+                        <option>bok choy</option>
+                        <option>fresh tarragon</option>
+                        <option>tart shells</option>
+                        <option>red pepper flakes</option>
+                        <option>yams</option>
+                        <option>celery salt</option>
+                        <option>pickled onion</option>
+                        <option>citron</option>
+                        <option>frozen blueberries</option>
+                        <option>lamb chops</option>
+                        <option>firm tofu</option>
+                        <option>ramps</option>
+                        <option>kimchi</option>
+                        <option>chili con carne</option>
+                        <option>skirt steak</option>
+                        <option>soda bread</option>
+                        <option>sauerkraut</option>
+                        <option>baby back ribs</option>
+                        <option>lager</option>
+                        <option>freshly ground pepper</option>
+                        <option>rose water</option>
+                        <option>cooked quinoa</option>
+                        <option>medjool date</option>
+                        <option>roma tomatoes</option>
+                        <option>corned beef</option>
+                        <option>orange peel</option>
+                        <option>pecorino cheese</option>
+                        <option>unsweetened cocoa powder</option>
+                        <option>mustard powder</option>
+                        <option>habanero</option>
+                        <option>halibut</option>
+                        <option>black tea</option>
+                        <option>jackfruit</option>
+                        <option>whisky</option>
+                        <option>fresh oregano</option>
+                        <option>spam</option>
+                        <option>asafoetida powder</option>
+                        <option>evaporated milk</option>
+                        <option>fresh blueberries</option>
+                        <option>ground cardamom</option>
+                        <option>safflower</option>
+                        <option>pink grapefruit</option>
+                        <option>fructose</option>
+                        <option>amchur</option>
+                        <option>dipping sauces</option>
+                        <option>yellow mustard</option>
+                        <option>rice vermicelli</option>
+                        <option>gingersnap</option>
+                        <option>corn tortillas</option>
+                        <option>yellow cake mix</option>
+                        <option>roasted red peppers</option>
+                        <option>soba noodles</option>
+                        <option>butter beans</option>
+                        <option>chopped green chilies</option>
+                        <option>lemon peel</option>
+                        <option>crabmeat</option>
+                        <option>Italian bread</option>
+                        <option>enchilada sauce</option>
+                        <option>cocktail sauce</option>
+                        <option>quail</option>
+                        <option>pork rind</option>
+                        <option>walnut pieces</option>
+                        <option>thyme leaves</option>
+                        <option>brown sauce</option>
+                        <option>juniper berries</option>
+                        <option>cream cheese frosting</option>
+                        <option>wild rice</option>
+                        <option>whole almonds</option>
+                        <option>mochi</option>
+                        <option>bonito flakes</option>
+                        <option>sweet soy</option>
+                        <option>flank steak</option>
+                        <option>pickle juice</option>
+                        <option>salted peanuts</option>
+                        <option>San Marzano tomatoes</option>
+                        <option>prosciutto</option>
+                        <option>frozen raspberries</option>
+                        <option>canned corn</option>
+                        <option>tandoori paste</option>
+                        <option>groundnut</option>
+                        <option>soup mix</option>
+                        <option>agar</option>
+                        <option>Italian herbs</option>
+                        <option>chopped walnuts</option>
+                        <option>tomato salsa</option>
+                        <option>bread mix</option>
+                        <option>rice crackers</option>
+                        <option>black gram</option>
+                        <option>cardamon</option>
+                        <option>banana chips</option>
+                        <option>beef fat</option>
+                        <option>dinner rolls</option>
+                        <option>condensed cream</option>
+                        <option>ground sausage</option>
+                        <option>dried pasta</option>
+                        <option>cooked turkey</option>
+                        <option>fresh onion</option>
+                        <option>chicken nugget</option>
+                        <option>red rice</option>
+                        <option>ground chuck</option>
+                        <option>five-spice powder</option>
+                        <option>chicken strips</option>
+                        <option>chocolate curls</option>
+                        <option>pineapple rings</option>
+                        <option>pink peppercorns</option>
+                        <option>diced potatoes</option>
+                        <option>roasted almonds</option>
+                        <option>pork bones</option>
+                        <option>hot chili sauce</option>
+                        <option>pasta sheets</option>
+                        <option>duck breasts</option>
+                        <option>lean beef</option>
+                        <option>large potatoes</option>
+                        <option>lasagna noodles</option>
+                        <option>sugar pea</option>
+                        <option>fruit cocktail</option>
+                        <option>key lime</option>
+                        <option>crescent rolls</option>
+                        <option>free-range eggs</option>
+                        <option>lamb shoulder</option>
+                        <option>millet flour</option>
+                        <option>sweet peas</option>
+                        <option>cornbread mix</option>
+                        <option>chicken parts</option>
+                        <option>onion slices</option>
+                        <option>filet mignon</option>
+                        <option>corn chips</option>
+                        <option>prepared horseradish</option>
+                        <option>chocolate syrup</option>
+                        <option>rainbow trout</option>
+                        <option>red currant jelly</option>
+                        <option>liquid aminos</option>
+                        <option>blueberry jam</option>
+                        <option>pitted cherries</option>
+                        <option>lemon wedge</option>
+                        <option>low-fat milk</option>
+                        <option>unflavored gelatin</option>
+                        <option>cream of mushroom soup</option>
+                        <option>amaretto</option>
+                        <option>toasted slivered almonds</option>
+                        <option>shredded lettuce</option>
+                        <option>gumbo</option>
+                        <option>stir fry sauce</option>
+                        <option>strong white bread flour</option>
+                        <option>pea shoots</option>
+                        <option>moong dal</option>
+                        <option>baked ham</option>
+                        <option>grated lemon zest</option>
+                        <option>snow peas</option>
+                        <option>Louisiana Hot Sauce</option>
+                        <option>sticky rice</option>
+                        <option>spelt flour</option>
+                        <option>light corn syrup</option>
+                        <option>chopped hazelnuts</option>
+                        <option>vanilla pudding</option>
+                        <option>pollock</option>
+                        <option>chicken carcass</option>
+                        <option>white miso</option>
+                        <option>dried mushrooms</option>
+                        <option>garlic chives</option>
+                        <option>bacon drippings</option>
+                        <option>cooked and drained</option>
+                        <option>vin santo</option>
+                        <option>oat bran</option>
+                        <option>beef gravy</option>
+                        <option>sliced shallots</option>
+                        <option>duck liver</option>
+                        <option>french onion soup</option>
+                        <option>onion salt</option>
+                        <option>diced celery</option>
+                        <option>fresca</option>
+                        <option>low-fat sour cream</option>
+                        <option>adobo sauce</option>
+                        <option>navel oranges</option>
+                        <option>unsweetened vanilla almond milk</option>
+                        <option>pumpernickel</option>
+                        <option>food colouring</option>
+                        <option>pepperoncini</option>
+                        <option>diced yellow onion</option>
+                        <option>brown gravy mix</option>
+                        <option>cherry brandy</option>
+                        <option>gumdrops</option>
+                        <option>country gravy</option>
+                        <option>dijon mustard</option>
+                        <option>base sauce</option>
+                        <option>pickled vegetables</option>
+                        <option>pumpkin pie filling</option>
+                        <option>stuffing mix</option>
+                        <option>cooking fat</option>
+                        <option>pimento stuffed olives</option>
+                        <option>center cut bacon</option>
+                        <option>spring roll wrappers</option>
+                        <option>coconut extract</option>
+                        <option>pearl onions</option>
+                        <option>extra lean ground beef</option>
+                        <option>daal</option>
+                        <option>rotini</option>
+                        <option>gochugaru</option>
+                        <option>azuki bean</option>
+                        <option>instant espresso powder</option>
+                        <option>whole nutmegs</option>
+                        <option>egg roll wrappers</option>
+                        <option>liver pate</option>
+                        <option>vanilla instant pudding</option>
+                        <option>raspberry preserves</option>
+                        <option>doritos</option>
+                        <option>white rice flour</option>
+                        <option>allspice berries</option>
+                        <option>butter pecan ice cream</option>
+                        <option>rose syrup</option>
+                        <option>crab leg</option>
+                        <option>hot fudge topping</option>
+                        <option>frozen whipped topping</option>
+                        <option>hot pepper sauce</option>
+                        <option>orange glaze</option>
+                        <option>powdered milk</option>
+                        <option>sausage links</option>
+                        <option>ginger piece</option>
+                        <option>plum sauce</option>
+                        <option>white rum</option>
+                        <option>small curd cottage cheese</option>
+                        <option>chickpea flour</option>
+                        <option>full fat sour cream</option>
+                        <option>wonton wrappers</option>
+                        <option>ginger root</option>
+                        <option>buttery spread</option>
+                        <option>chicken livers</option>
+                        <option>salmon roe</option>
+                        <option>saki</option>
+                        <option>hot chili paste</option>
+                        <option>pickling salt</option>
+                        <option>blackberry jam</option>
+                        <option>M&Ms Candy</option>
+                        <option>hog casings</option>
+                        <option>bean dip</option>
+                        <option>ginger garlic stir fry sauce</option>
+                        <option>yellow tomato</option>
+                        <option>beaujolais</option>
+                        <option>young ginger</option>
+                        <option>green leaf lettuce</option>
+                        <option>oven-ready lasagna noodles</option>
+                        <option>instant espresso granules</option>
+                        <option>Oscar Mayer Bacon</option>
+                        <option>pasta shells</option>
+                        <option>no salt added chicken broth</option>
+                        <option>light alfredo sauce</option>
+                        <option>hot sausage</option>
+                        <option>hushpuppy mix</option>
+                        <option>green chile</option>
+                        <option>turkey chili with beans</option>
+                        <option>genoa salami</option>
+                        <option>wide rice noodles</option>
+                        <option>bottom round roast</option>
+                        <option>traditional italian sauce</option>
+                        <option>sweet potatoes & yams</option>
+                        <option>bottled chili sauce</option>
+                        <option>sugar pumpkin</option>
+                        <option>pork top loin chops</option>
+                        <option>hearts of palm</option>
+                        <option>bone in chicken thighs</option>
+                        <option>shrimp and crab boil seasoning</option>
+                        <option>sambal ulek</option>
+                        <option>white italian tuna in olive oil</option>
+                        <option>curaçao</option>
+                        <option>unsalted creamy peanut butter</option>
+                        <option>meringue shells</option>
+                        <option>fryer chickens</option>
+                        <option>blackberry brandy</option>
+                        <option>black truffles</option>
+                        <option>matzo meal</option>
+                        <option>frozen broccoli florets</option>
+                        <option>extra light olive oil</option>
+                        <option>curly endive</option>
+                        <option>chunky tomato salsa</option>
+                        <option>gluten free rice chex</option>
+                        <option>full fat coconut milk</option>
+                        <option>roast breast of chicken</option>
+                        <option>unsulphured molasses</option>
+                        <option>boneless skin on chicken thighs</option>
+                        <option>cold-smoked salmon</option>
+                        <option>dessert wine</option>
+                        <option>Bragg Liquid Aminos</option>
+                        <option>coffee extract</option>
+                        <option>mild white fish</option>
+                        <option>fajita size flour tortillas</option>
+                        <option>white hominy</option>
+                        <option>chicken consomme soup mix</option>
+                        <option>diced beef</option>
+                        <option>guava paste</option>
+                        <option>mung bean noodles</option>
+                        <option>italian style seasoning</option>
+                        <option>brioche bread</option>
+                        <option>haricots verts</option>
+                        <option>fish bones</option>
+                        <option>Success White Rice</option>
+                        <option>McCormick Original Country Gravy Mix</option>
+                        <option>chopped fresh chives</option>
+                        <option>seedless cucumber</option>
+                        <option>yellow miso</option>
+                        <option>black forest ham</option>
+                        <option>bean curd stick</option>
+                        <option>burger style crumbles</option>
+                        <option>fresh fava bean</option>
+                        <option>shiro miso</option>
+                        <option>bee pollen</option>
+                        <option>asafetida powder</option>
+                        <option>fresno chiles</option>
+                        <option>cured beef</option>
+                        <option>soy paste</option>
+                        <option>oil cured olives</option>
+                        <option>low fat mozzarella</option>
+                        <option>Hatch Green Chiles</option>
+                        <option>white cheddar cheese</option>
+                        <option>Equal Sweetener</option>
+                        <option>thick-cut bacon</option>
+                        <option>adzuki beans</option>
+                        <option>low sodium beef broth</option>
+                        <option>Scotch whisky</option>
+                        <option>vegetable slaw</option>
+                        <option>italian rolls</option>
+                        <option>nama yuba</option>
+                        <option>gran marnier</option>
+                        <option>beef shoulder roast</option>
+                        <option>nonfat yogurt</option>
+                        <option>avocado leaves</option>
+                        <option>crimini mushrooms</option>
+                        <option>lotus roots</option>
+                        <option>Del Monte Diced Tomatoes</option>
+                        <option>gluten-free tamari</option>
+                        <option>black fungus</option>
+                        <option>campanelle</option>
+                        <option>frozen chopped broccoli</option>
+                        <option>pastis</option>
+                        <option>rice syrup</option>
+                        <option>stir fry oil</option>
+                        <option>hong kong-style noodles</option>
+                        <option>Pompeian Canola Oil and Extra Virgin Olive Oil</option>
+                        <option>phyllo sheets</option>
+                        <option>all purpose unbleached flour</option>
+                        <option>honey gold potatoes</option>
+                        <option>carbonated water</option>
+                        <option>short-grain rice</option>
+                        <option>marshmallow creme</option>
+                        <option>nopales</option>
+                        <option>tomatoes on the vine</option>
+                        <option>celery cabbage</option>
+                        <option>hard cider</option>
+                        <option>fresh chevre</option>
+                        <option>pepperoni turkei</option>
+                        <option>dress russian</option>
+                        <option>frozen cheese ravioli</option>
+                        <option>mild Italian sausage</option>
+                        <option>dashi powder</option>
+                        <option>recaito</option>
+                        <option>boneless beef short ribs</option>
+                        <option>banh trang</option>
+                        <option>dried porcini mushrooms</option>
+                        <option>fresh pork fat</option>
+                        <option>country crock calcium plus vitamin d</option>
+                        <option>shiso leaves</option>
+                        <option>shirataki</option>
+                        <option>long green pepper</option>
+                        <option>low-fat baked tortilla chips</option>
+                        <option>quick-cooking tapioca</option>
+                        <option>farro</option>
+                        <option>kecap manis</option>
+                        <option>grape tomatoes</option>
+                        <option>bartlett pears</option>
+                        <option>pasta rotel</option>
+                        <option>less sodium beef broth</option>
+                        <option>cola-flavored carbonated beverage</option>
+                        <option>boneless chicken breast halves</option>
+                        <option>low-fat cheddar cheese</option>
+                        <option>baking mix</option>
+                        <option>trout fillet</option>
+                        <option>puff pastry sheets</option>
+                        <option>hungarian hot paprika</option>
+                        <option>masoor dal</option>
+                        <option>peach schnapps</option>
+                        <option>unseasoned breadcrumbs</option>
+                        <option>sliced olives</option>
+                        <option>bouillon shrimp</option>
+                        <option>shanghai-style noodles</option>
+                        <option>baby portobello mushrooms</option>
+                        <option>grilled chicken breasts</option>
+                        <option>chili pepper flakes</option>
+                        <option>sliced green olives</option>
+                        <option>minced chicken</option>
+                        <option>lambs liver</option>
+                        <option>vegetable juice cocktail</option>
+                        <option>prepared lasagne</option>
+                        <option>large shrimp</option>
+                        <option>low sodium canned chicken broth</option>
+                        <option>crème de menthe</option>
+                        <option>head cauliflower</option>
+                        <option>calf liver</option>
+                        <option>thai chile</option>
+                        <option>cilantro leaves</option>
+                        <option>rapini</option>
+                        <option>creole style seasoning</option>
+                        <option>vegetable gumbo</option>
+                        <option>nonfat cream cheese</option>
+                        <option>skinless chicken pieces</option>
+                        <option>gluten free all purpose flour</option>
+                        <option>shredded low-fat cheese</option>
+                        <option>ground chicken breast</option>
+                        <option>katakuriko</option>
+                        <option>smooth pasta</option>
+                        <option>cilantro sprigs</option>
+                        <option>crushed cornflakes</option>
+                        <option>ridged ziti</option>
+                        <option>caciotta</option>
+                        <option>konbu dashi</option>
+                        <option>pork spare ribs</option>
+                        <option>dried ziti</option>
+                        <option>butter cake mix</option>
+                        <option>no-salt-added black beans</option>
+                        <option>Tabasco Green Pepper Sauce</option>
+                        <option>low sodium store bought chicken stock</option>
+                        <option>scallion greens</option>
+                        <option>part-skim ricotta cheese</option>
+                        <option>chili purée</option>
+                        <option>açai powder</option>
+                        <option>"""""""Frenchs Spicy Brown Mustard"""""""</option>
+                        <option>reduced fat milk</option>
+                        <option>pizza doughs</option>
+                        <option>fresh shiitake mushrooms</option>
+                        <option>purple grapes</option>
+                        <option>turkey thigh</option>
+                        <option>top loin</option>
+                        <option>horseradish root</option>
+                        <option>tamarind concentrate</option>
+                        <option>Saigon cinnamon</option>
+                        <option>ham steak</option>
+                        <option>frozen peeled prawns</option>
+                        <option>fresh bean</option>
+                        <option>self-rising cake flour</option>
+                        <option>osetra caviar</option>
+                        <option>cracked wheat</option>
+                        <option>hot curry powder</option>
+                        <option>taco rub</option>
+                        <option>lamb stew meat</option>
+                        <option>mezcal</option>
+                        <option>medium firm tofu</option>
+                        <option>herb mix</option>
+                        <option>Sicilian olives</option>
+                        <option>reduced sodium vegetable juice</option>
+                        <option>soup pasta</option>
+                        <option>yucca root</option>
+                        <option>Spanish smoked paprika</option>
+                        <option>veal chops</option>
+                        <option>grated lemon peel</option>
+                        <option>broccolini</option>
+                        <option>cabernet sauvignon</option>
+                        <option>soya flour</option>
+                        <option>bread yeast</option>
+                        <option>tzatziki</option>
+                        <option>steamed brown rice</option>
+                        <option>cook and drain</option>
+                        <option>Goya Seasoning</option>
+                        <option>channa dal</option>
+                        <option>Amaretti Cookies</option>
+                        <option>fresh leav spinach</option>
+                        <option>sharp white cheddar cheese</option>
+                        <option>diced red onions</option>
+                        <option>Wish-Bone Italian Dressing</option>
+                        <option>black quinoa</option>
+                        <option>whole grain bread</option>
+                        <option>gold tequila</option>
+                        <option>long green chili peppers</option>
+                        <option>chocolate candy bars</option>
+                        <option>all potato purpos</option>
+                        <option>blanched almonds</option>
+                        <option>tarama</option>
+                        <option>mushroom marinara</option>
+                        <option>spaghettini</option>
+                        <option>Old El Paso Taco Seasoning Mix</option>
+                        <option>chili leaf</option>
+                        <option>brazil nuts</option>
+                        <option>boneless chicken cutlet</option>
+                        <option>medium grain brown rice</option>
+                        <option>diced mushrooms</option>
+                        <option>fresh tuna steaks</option>
+                        <option>seedless green grape</option>
+                        <option>baby arugula</option>
+                        <option>italian plum tomatoes</option>
+                        <option>slab bacon</option>
+                        <option>low-fat plain greek yogurt</option>
+                        <option>grated sharp cheese</option>
+                        <option>tilapia fillets</option>
+                        <option>french dressing</option>
+                        <option>adobo seasoning</option>
+                        <option>chocolate instant pudding</option>
+                        <option>cooked bone in ham</option>
+                        <option>peeled deveined shrimp</option>
+                        <option>cream lowfat</option>
+                        <option>unsalted cashews</option>
+                        <option>boneless country pork ribs</option>
+                        <option>butter-flavored spray</option>
+                        <option>pasilla chiles</option>
+                        <option>Jell-O Gelatin</option>
+                        <option>salad greens</option>
+                        <option>togarashi</option>
+                        <option>summer savory</option>
+                        <option>beef rib roast</option>
+                        <option>less sodium black beans</option>
+                        <option>chicken thigh fillets</option>
+                        <option>whole wheat linguine</option>
+                        <option>black cardamom pods</option>
+                        <option>pomegranate syrup</option>
+                        <option>sorghum syrup</option>
+                        <option>Daisy Brand Light Sour Cream</option>
+                        <option>gumbo file</option>
+                        <option>bone-in pork chops</option>
+                        <option>cranberry juice</option>
+                        <option>Thai Kitchen Fish Sauce</option>
+                        <option>Japanese rice vinegar</option>
+                        <option>anise flavoring</option>
+                        <option>Anaheim chile</option>
+                        <option> ounc ziti pasta</option>
+                        <option>cook and drain</option>
+                        <option>poppyseeds</option>
+                        <option>nonfat dry milk powder</option>
+                        <option>chunky tomato sauce</option>
+                        <option>canned chicken broth</option>
+                        <option>unsweetened dried coconut</option>
+                        <option>light rum</option>
+                        <option>creole seasoning</option>
+                        <option>skinless boneless chicken legs</option>
+                        <option>dried bonito flakes</option>
+                        <option>pink beans</option>
+                        <option>mahi mahi</option>
+                        <option>lobster meat</option>
+                        <option>tamarind extract</option>
+                        <option>pork strips</option>
+                        <option>colby cheese</option>
+                        <option>masa harina</option>
+                        <option>coffee ice cream</option>
+                        <option>stilton</option>
+                        <option>green chile sauce</option>
+                        <option>taglierini</option>
+                        <option>loin pork chops</option>
+                        <option>beef ribs</option>
+                        <option>anise liqueur</option>
+                        <option>semisweet chocolate chunks</option>
+                        <option>jambalaya</option>
+                        <option>peperoncini</option>
+                        <option>rich chicken stock</option>
+                        <option>fat free cream cheese</option>
+                        <option>Haas avocados</option>
+                        <option>baking yeast</option>
+                        <option>whiting</option>
+                        <option>cuban peppers</option>
+                        <option>frisee</option>
+                        <option>fresh basil leaves</option>
+                        <option>pancit canton</option>
+                        <option>chopped fresh sage</option>
+                        <option>beef heart</option>
+                        <option>frozen peppers and onions</option>
+                        <option>cotechino</option>
+                        <option>black bass</option>
+                        <option>low sodium pasta sauce</option>
+                        <option>fresh green peas</option>
+                        <option>grated Gruyère cheese</option>
+                        <option>spanish onion</option>
+                        <option>no-salt-added diced tomatoes</option>
+                        <option>marsala wine</option>
+                        <option>grated cotija</option>
+                        <option>mushroom soy sauce</option>
+                        <option>low-fat tomato-and-basil pasta sauc</option>
+                        <option>fresh mexican cheese</option>
+                        <option>reduced fat provolone cheese</option>
+                        <option>mild cheddar cheese</option>
+                        <option>sambal olek</option>
+                        <option>frozen limeade concentrate</option>
+                        <option>ginger juice</option>
+                        <option>cube steaks</option>
+                        <option>petite peas</option>
+                        <option>crema mexicana</option>
+                        <option>maui onion</option>
+                        <option>baby turnips</option>
+                        <option>ground white pepper</option>
+                        <option>wafer cookies</option>
+                        <option>horse gram</option>
+                        <option>rapid rise yeast</option>
+                        <option>red enchilada sauce</option>
+                        <option>shrimp paste</option>
+                        <option>shoulder roast</option>
+                        <option>country style italian bread</option>
+                        <option>cajun seasoning</option>
+                        <option>dried kidney beans</option>
+                        <option>brown hash potato</option>
+                        <option>dried black mushrooms</option>
+                        <option>cornflake cereal</option>
+                        <option>semisweet chocolate</option>
+                        <option>padron peppers</option>
+                        <option>rotini pasta</option>
+                        <option>cook and drain</option>
+                        <option>extra sharp white cheddar cheese</option>
+                        <option>reduced fat cream of mushroom soup</option>
+                        <option>Gourmet Garden garlic paste</option>
+                        <option>crab boil</option>
+                        <option>whole wheat fusilli</option>
+                        <option>Mazola Corn Oil</option>
+                        <option>Elmlea single</option>
+                        <option>napa cabbage</option>
+                        <option>lamb leg</option>
+                        <option>frozen artichoke hearts</option>
+                        <option>butter lettuce</option>
+                        <option>kimchi juice</option>
+                        <option>cheese ravioli</option>
+                        <option>tortilla bowls</option>
+                        <option>parmagiano reggiano</option>
+                        <option>lamb kidneys</option>
+                        <option>pumpernickel bread</option>
+                        <option>Boursin Cheese with Garlic and Herbs</option>
+                        <option>queso fresca</option>
+                        <option>soft fresh goat cheese</option>
+                        <option>grated kefalotiri</option>
+                        <option>reduced-fat milk</option>
+                        <option>tandoori spices</option>
+                        <option>boneless pork tenderloin</option>
+                        <option>fajita seasoning mix</option>
+                        <option>unsalted roasted peanuts</option>
+                        <option>port wine</option>
+                        <option>shredded phyllo dough</option>
+                        <option>vegetable bouillon</option>
+                        <option>braggs liquid aminos</option>
+                        <option>carne asada</option>
+                        <option>head on shrimp</option>
+                        <option>turnip greens</option>
+                        <option>knockwurst</option>
+                        <option>golden zucchini</option>
+                        <option>mole paste</option>
+                        <option>tangzhong roux</option>
+                        <option>ear of corn</option>
+                        <option>uncle bens</option>
+                        <option>crisp-cooked and crumbled</option>
+                        <option>sea bass fillets</option>
+                        <option>greek style plain yogurt</option>
+                        <option>sea salt flakes</option>
+                        <option>cream cheese lowfat</option>
+                        <option>epazote</option>
+                        <option>lean ground meat</option>
+                        <option>ampalaya</option>
+                        <option>sweet bean sauce</option>
+                        <option>vanilla low-fat frozen yogurt</option>
+                        <option>rock candy syrup</option>
+                        <option>chopped fresh mint</option>
+                        <option>beef kidney</option>
+                        <option>soy vermicelli</option>
+                        <option>Boursin</option>
+                        <option>sorghum flour</option>
+                        <option>Nilla Wafers</option>
+                        <option>italian moscato</option>
+                        <option>canned beef broth</option>
+                        <option>diet orange soda</option>
+                        <option>less sodium smoked ham</option>
+                        <option>toasted wheat germ</option>
+                        <option>pork stew meat</option>
+                        <option>chipotle sauce</option>
+                        <option>fat free less sodium beef broth</option>
+                        <option>dried tart cherries</option>
+                        <option>chinese celery cabbage</option>
+                        <option>knorr homestyl stock chicken</option>
+                        <option>low-fat shredded cheddar cheese</option>
+                        <option>boneless beef chuck roast</option>
+                        <option>cane syrup</option>
+                        <option>Gochujang base</option>
+                    </select>
+                <!-- </div> -->
+                <!-- <div class="form-group">
+                    <button class="btn btn-success store-related-post btn-sm">Save</button>
+                </div> -->
+            </form>
+    </div>
+                <table class="table table-hover infinite-container">
+                    <thead>
+                    <tr>
+                        <th class="header" scope="col">Name</th>
+                        <th class="header" scope="col">Source</th>
+                        <th class="header" scope="col">Ingredients</th>
+                        <th class="header" scope="col">Missing Ingredients</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for recipe in all_recipes %}
+                    <tr class="table-row infinite-item">
+                        <td scope="row"> {{ recipe.Name }}</td>
+                        <td><img src="{{ recipe.Image }}" width="320" height="220"
+                                 onclick="window.open('{{ recipe.Source }}', '_blank');" style="cursor: pointer;}"></td>
+                        <td>{{ recipe.Ingredients }}</td>
+                        <td>{{ recipe.Ingredients }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+
+
+{% if page_obj.has_next %}
+<a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}">More</a>
+{% endif %}
+
+{% block javascript %}
+<script>
+    var infinite = new Waypoint.Infinite({
+        element: $('.infinite-container')[0],
+    });
+</script>
+{% endblock %}
+
+
+<!-- Menu Toggle Script -->
+<script>
+    $("#menu-toggle").click(function (e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
+
+</body>
+
+</html>
