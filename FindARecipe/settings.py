@@ -25,7 +25,7 @@ SECRET_KEY = 'zbpvuo$&92+(21&n#5-msw*0klh&777a)32tjq2&nv9c47(z!1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['polar-gorge-16832.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['polar-gorge-16832.herokuapp.com', '127.0.0.1:8000']
 
 # Application definition
 
