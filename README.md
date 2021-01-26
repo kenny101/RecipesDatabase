@@ -7,4 +7,4 @@ https://github.com/kenny101/Youtube-Recipes-Dataset-with-Ingredients
 
 ## Preview:
 
-[Imgur](https://imgur.com/UMWNmGe)
+![Imgur](https://media.giphy.com/media/R1i1XIjT9pWOP4siF1/giphy.gif)
