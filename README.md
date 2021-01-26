@@ -7,4 +7,4 @@ https://github.com/kenny101/Youtube-Recipes-Dataset-with-Ingredients
 
 ## Preview:
 
-!(image)[https://i.imgur.com/UMWNmGe.mp4]
+[Imgur](https://imgur.com/UMWNmGe)
