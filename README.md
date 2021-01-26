@@ -6,5 +6,6 @@ The website's backend was created using Django and I scrapped data using this py
 https://github.com/kenny101/Youtube-Recipes-Dataset-with-Ingredients
 
 ## Preview:
-![imigur preview of my website](https://imgur.com/a/1b3148i)
+
+![imgur preview of my website](https://i.imgur.com/UMWNmGe.mp4)
 
